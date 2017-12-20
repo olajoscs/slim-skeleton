@@ -17,18 +17,21 @@ $dotenv->load();
 $config = require ROOT . '/src/config/config.php';
 
 // Changing most important php.ini values
-if ($config['error']['display'] !== true) {
+if (evaluate($config['error']['display']) !== true) {
     $displayErrors = false;
     $reportLevel   = 0;
 }
 
 // Setting most important php.ini values
 ini_set('display_errors', $displayErrors);
-error_reporting($reportLevel);
+ini_set('error_reporting', $reportLevel);
+ini_set('display_startup_errors', $displayErrors);
 
 // Creating the Slim app
 $app = new \Slim\App([
-    'settings' => $config
+    'settings' => [
+        'displayErrorDetails' => $displayErrors
+    ]
 ]);
 
 // Including dependencies

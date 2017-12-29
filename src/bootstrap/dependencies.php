@@ -3,6 +3,7 @@
 /** @var \Slim\App $app */
 
 use App\Core\Config;
+use OlajosCs\QueryBuilder\ConnectionConfig;
 use OlajosCs\QueryBuilder\Contracts\Connection;
 
 $container = $app->getContainer();
@@ -34,49 +35,16 @@ $container[Config::class] = function(\Slim\Container $container) {
 $container[Connection::class] = function($container) {
     $configArray = $container->get(Config::class)->get('database');
 
-    // TODO: QueryBuilder default config class
-    $config = new class($configArray) implements \OlajosCs\QueryBuilder\Config
+    $config = new class($configArray) extends ConnectionConfig
     {
-        private $config;
-
-        public function __construct(array $configArray)
+        public function __construct(array $config)
         {
-            $this->config = $configArray;
-        }
-
-        public function getHost()
-        {
-            return $this->config['host'];
-        }
-
-
-        public function getUser()
-        {
-            return $this->config['username'];
-        }
-
-
-        public function getPassword()
-        {
-            return $this->config['password'];
-        }
-
-
-        public function getDatabase()
-        {
-            return $this->config['database'];
-        }
-
-
-        public function getOptions()
-        {
-            return $this->config['options'] ?: [];
-        }
-
-
-        public function getDatabaseType()
-        {
-            return $this->config['type'];
+            $this->host         = $config['host'];
+            $this->user         = $config['username'];
+            $this->password     = $config['password'];
+            $this->database     = $config['database'];
+            $this->options      = $config['options'] ?: [];
+            $this->databaseType = $config['type'];
         }
     };
 
